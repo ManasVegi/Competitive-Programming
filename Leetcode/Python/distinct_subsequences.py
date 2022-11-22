@@ -10,3 +10,19 @@ def numDistinct(self, s: str, t: str) -> int:
                     dp[i][j] += dp[i - 1][j - 1]
                 dp[i][j] += dp[i - 1][j]
         return dp[len(s)][len(t)]
+
+class Solution:
+    #O(n) memory when n is size of t
+    def numDistinctBetterMemory(self, s: str, t: str) -> int:
+        M, N = len(s), len(t)
+        prev = [0 for _ in range(N + 1)]
+        prev[N] = 1
+        for i in range(M - 1, -1, -1):
+            dp = [0 for _ in range(N + 1)]
+            dp[N] = 1
+            for j in range(N - 1, -1, -1):
+                dp[j] += prev[j] #dont pick
+                if s[i] == t[j]:
+                    dp[j] += prev[j + 1]
+            prev = dp
+        return prev[0]
