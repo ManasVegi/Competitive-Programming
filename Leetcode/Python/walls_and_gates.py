@@ -1,29 +1,30 @@
 from collections import deque
+List = list
+
 class Solution:
-    def wallsAndGates(self, rooms: list[list[int]]) -> None:
-            """
-            Do not return anything, modify rooms in-place instead.
-            """
-            q = deque()
-            for i in range(len(rooms)):
-                for j in range(len(rooms[0])):
-                    if rooms[i][j] == 0:
-                        q.append((i, j))
-            dist = 1
-            while len(q) > 0:
-                n = len(q)
-                for i in range(n):
-                    r, c = q.popleft()
-                    if r > 0 and rooms[r - 1][c] == 2147483647:
-                        rooms[r - 1][c] = dist
-                        q.append((r-1, c))
-                    if c > 0 and rooms[r][c - 1] == 2147483647:
-                        rooms[r][c - 1] = dist
-                        q.append((r, c - 1))
-                    if r < len(rooms) - 1 and rooms[r + 1][c] == 2147483647:
-                        rooms[r + 1][c] = dist
-                        q.append((r + 1, c))
-                    if c < len(rooms[0]) - 1 and rooms[r][c + 1] == 2147483647:
-                        rooms[r][c + 1] = dist
-                        q.append((r, c + 1))
-                dist += 1
+    def wallsAndGates(self, grid: List[List[int]]) -> None:
+        """
+        Do not return anything, modify rooms in-place instead.
+        """
+        if len(grid)
+        INF = 2147483647
+        q = deque()
+        deltas = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] == 0:
+                    q.append((i, j))
+        dist = 0
+        while len(q) > 0:
+            n = len(q)
+            for _ in range(n):
+                r, c = q.popleft()
+                grid[r][c] = dist
+                for dr, dc in deltas:
+                    newR, newC = r + dr, c + dc
+                    if newR < 0 or newC < 0 or newR >= len(grid) or newC >= len(grid[0]):
+                        continue
+                    if grid[newR][newC] == INF:
+                        grid[newR][newC] = -1
+                        q.append((newR, newC))
+            dist += 1
