@@ -1,5 +1,6 @@
 List = list
 from collections import deque
+from collections import defaultdict
 class Solution:
     #code could be more concise
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
@@ -39,4 +40,37 @@ class Solution:
             if c not in indeg:
                 topo.append(c) 
         #need to reverse topo due to the direction of my edges, from course -> prereq 
-        return reversed(topo) if len(visited) == len(adjList) else []
+        return reversed(topo) if len(visited) == len(adjList) else []\
+
+    def findOrderDfs(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        adjList = defaultdict(list)
+        for u, v in prerequisites:
+            adjList[u].append(v)
+        visited = set()
+        ans = []
+        def dfs(u, soFar):
+            if u in soFar:
+                return False
+            if u in visited:
+                return True
+            visited.add(u)
+            if u not in adjList:
+                ans.append(u)
+                return True
+            soFar.add(u)
+            for v in adjList[u]:
+                if not dfs(v, soFar):
+                    return False
+            ans.append(u)
+            soFar.remove(u)
+            return True
+        for u in adjList:
+            if u not in visited:
+                if not dfs(u, set()):
+                    return []
+        for u in range(numCourses):
+            if u not in visited:
+                ans.append(u)
+        return ans
+    
+        
