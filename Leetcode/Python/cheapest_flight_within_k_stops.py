@@ -20,6 +20,28 @@ class Solution:
                         bestResult = min(bestResult, distances[(dst, i)])
         return -1 if bestResult == float('inf') else bestResult
 
+    def findCheapestPriceClean(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
+        dists = defaultdict(lambda: float('inf'))
+        dists[(src, -1)] = 0
+        for d in range(k + 1):
+            for u, v, w in flights:
+                if (u, d - 1) in dists:
+                    dists[(v, d)] = min(dists[(v, d)], w + dists[(u, d - 1)])
+                    dists[(u, d)] = min(dists[(u, d)], dists[(u, d - 1)])
+        return dists[(dst, k)] if (dst, k) in dists else -1
+
+    def findCheapestPriceCleanBetterMemory(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
+        prevdists = defaultdict(lambda: float('inf'))
+        prevdists[src] = 0
+        for d in range(k + 1):
+            currdists = defaultdict(lambda: float('inf'))
+            for u, v, w in flights:
+                if u in prevdists:
+                    currdists[v] = min(currdists[v], w + prevdists[u])
+                    currdists[u] = min(currdists[u], prevdists[u])
+            prevdists = currdists
+        return prevdists[dst] if dst in prevdists else -1
+
     def findCheapestPriceBetterMemory(self, n: int, flights: List[List[int]], src: int, dst: int, k: int) -> int:
         adjMat = defaultdict(lambda: defaultdict(lambda: float('inf')))
         for flight in flights:
